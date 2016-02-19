@@ -1,0 +1,6 @@
+Makefile
+*.log
+obj/
+*.o
+*.a
+*.so

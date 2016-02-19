@@ -1,0 +1,12 @@
+################################################################################
+# Use absolute path or path from ~
+# e.g. ~/projects/libft_rendu
+################################################################################
+
+FT_LS_PATH = /path/to/ft_ls
+GET_NEXT_LINE_PATH = /path/to/get_next_line
+LIBFT_PATH = /path/to/libft
+FT_PRINTF_PATH = /path/to/printf
+FT_SH1_PATH = /path
+FT_SH2_PATH = /path
+LIBFTASM_PATH = /path
