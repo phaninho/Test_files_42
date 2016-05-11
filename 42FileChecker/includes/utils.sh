@@ -55,6 +55,8 @@ then
 	MOULITEST_DIR="moulitest_42projects"
 	LIBFTUNITTEST_URL="https://github.com/alelievr/libft-unit-test"
 	LIBFTUNITTEST_DIR="libft-unit-test"
+	EXTERNAL_REPOSITORY_FILLITCHECKER_URL="https://github.com/anisg/fillit_checker"
+	EXTERNAL_REPOSITORY_FILLITCHECKER_DIR="fillit_checker"
 
 	function check_option_set
 	{
@@ -102,15 +104,15 @@ then
 	}
 
 	function display_hr2
-    {
-        local MARGIN
+	{
+		local MARGIN
 		(( MARGIN= $COLUMNS ))
-        printf $C_GREY""
-	    printf "%"$MARGIN"s" "" | sed s/' '/"${c:=¯ }"/g | cut -c1-$MARGIN
-	    printf $C_CLEAR""
-	    if [ "$1" != "" ]
-	    then
-		    echo "$1";
+		printf $C_GREY""
+		printf "%"$MARGIN"s" "" | sed s/' '/"${c:=¯ }"/g | cut -c1-$MARGIN
+		printf $C_CLEAR""
+		if [ "$1" != "" ]
+		then
+			echo "$1";
 		fi
 	}
 
@@ -135,12 +137,12 @@ then
 
 	function display_center
 	{
-	    local LEN MARGIN
-	    if [ "$1" != "" ]
+		local LEN MARGIN
+		if [ "$1" != "" ]
 		then
-		    LEN=${#1}
-		    (( MARGIN= ($COLUMNS - $LEN) / 2 ))
-		    printf "%"$MARGIN"s" " "
+			LEN=${#1}
+			(( MARGIN= ($COLUMNS - $LEN) / 2 ))
+			printf "%"$MARGIN"s" " "
 			printf "$1"
 			(( MARGIN= $MARGIN + ($COLUMNS - $LEN - $MARGIN * 2) ))
 			printf "%"$MARGIN"s" " "
@@ -149,34 +151,10 @@ then
 		fi
 	}
 
-	function display_header
-	{
-		local MARGIN
-		check_set_env
-		echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-		echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n "
-		clear
-		if [ "$1" != "" ]
-		then
-			printf "$1"
-		else
-			printf $C_INVERT""
-		fi
-		display_righttitle "PRESS ESCAPE TO EXIT - V1.r$CVERSION"
-		display_center "  _  _  ____  _____ _ _       ____ _               _              "
-		display_center " | || ||___ \|  ___(_) | ___ / ___| |__   ___  ___| | _____ _ __  "
-		display_center " | || |_ __) | |_  | | |/ _ \ |   | '_ \ / _ \/ __| |/ / _ \ '__| "
-		display_center " |__   _/ __/|  _| | | |  __/ |___| | | |  __/ (__|   <  __/ |    "
-		display_center "    |_||_____|_|   |_|_|\___|\____|_| |_|\___|\___|_|\_\___|_|    "
-		display_center "    jgigault @ student.42.fr                    06 51 15 98 82    "
-		display_center " "
-		printf $C_CLEAR""
-	}
-
 	function display_top
 	{
 		local LPATH=$1
-	    local LHOME LEN PROJECTNAME MYPATH
+		local LHOME LEN PROJECTNAME MYPATH
 		MYPATH=$1
 		PROJECTNAME=$2
 		LHOME=`echo "$HOME" | sed 's/\//\\\\\\//g'`
@@ -185,13 +163,13 @@ then
 		printf $C_WHITE"\n\n"
 		if [ "$MYPATH" != "" ]
 		then
-		    printf "  Current configuration:"
-		    (( LEN=$COLUMNS - 24 ))
-	        printf "%"$LEN"s" "$PROJECTNAME  "
-		    printf $C_CLEAR"  $LPATH\n\n"
-	    else
-		    printf "  $PROJECTNAME\n"
-		    printf "\n"
+			printf "  Current configuration:"
+			(( LEN=$COLUMNS - 24 ))
+			printf "%"$LEN"s" "$PROJECTNAME  "
+			printf $C_CLEAR"  $LPATH\n\n"
+		else
+			printf "  $PROJECTNAME\n"
+			printf "\n"
 		fi
 		printf ""$C_CLEAR
 	}
@@ -244,149 +222,21 @@ then
 		fi
 	}
 
-	function display_menu
-	{
-		local -a MENU FUNCS
-		local TOTAL SEL LEN SELN TITLE i TESTSA TESTSI
-		SEL=""
-		if [ "$1" != "" ]
-		then
-			printf $1
-		else
-			printf $C_INVERT""
-		fi
-		shift 1
-		printf "%"$COLUMNS"s" " "
-		printf "\n"
-		while (( $# > 0 ))
-		do
-			if [ "$1" == "_" ]
-			then
-				printf "%"$COLUMNS"s" " "
-						printf "\n"
-				shift 1
-			else
-				if [ "$1" == "TESTS" ]
-				then
-					i=2
-					TESTSI=1
-					TESTSA="$2[$i]"
-					while [ "${!TESTSA}" != "" ]
-					do
-						(( TOTAL += 1 ))
-						(( i++ ))
-						TESTSA="$2[$i]"
-						FUNCS[$TOTAL]="$3 $TESTSI RUN_ALONE"
-						MENU[$TOTAL]="${!TESTSA}"
-						(( i++ ))
-						(( TESTSI++ ))
-						TITLE=`echo "${!TESTSA}" | sed 's/%/%%/g'`
-						if (( $TOTAL < 10 ))
-						then
-							SELN=$TOTAL
-						else
-							(( SELN=65 + $TOTAL - 10 ))
-							SELN=`echo "$SELN" | awk '{printf("%c", $0)}'`
-						fi
-						(( LEN=$COLUMNS - ${#TITLE} - 9 ))
-						printf "  "$SELN")    $TITLE "
-						printf "%"$LEN"s" " "
-						printf "\n"
-						TESTSA="$2[$i]"
-					done
-					shift 3
-				else
-					(( TOTAL += 1 ))
-					FUNCS[$TOTAL]="$1"
-					MENU[$TOTAL]="$2"
-					TITLE=`echo "$2" | sed 's/%/%%/g'`
-					if (( $TOTAL < 10 ))
-					then
-						SELN=$TOTAL
-					else
-						(( SELN=65 + $TOTAL - 10 ))
-						SELN=`echo "$SELN" | awk '{printf("%c", $0)}'`
-					fi
-					(( LEN=$COLUMNS - ${#TITLE} - 9 ))
-					printf "  "$SELN")    $TITLE "
-					printf "%"$LEN"s" " "
-					printf "\n"
-					shift 2
-				fi
-			fi
-		done
-
-		printf "%"$COLUMNS"s" " "
-		printf $C_CLEAR"\n"
-		read -r -s -n 1 SEL
-		SEL=$(get_key $SEL)
-		if [ "$SEL" == "ESC" ]
-		then
-			exit_checker
-		fi
-		SEL=`ft_atoi "$SEL"`
-		while [ -z "${MENU[$SEL]}" -o "$(echo "${FUNCS[$SEL]}" | grep '^open ')" != "" ]
-		do
-			printf "\a"
-			if [ "$(echo "${FUNCS[$SEL]}" | grep '^open ')" != "" ]
-			then
-				if [ -f "$(echo "${FUNCS[$SEL]}" | sed 's/^open //')" -o "$(echo "${FUNCS[$SEL]}" | grep http)" != "" ]
-				then
-					eval ${FUNCS[$SEL]}
-				fi
-			fi
-			SEL=""
-			read -s -n 1 SEL
-			SEL=$(get_key $SEL)
-			if [ "$SEL" == "ESC" ]
-			then
-				exit_checker
-			fi
-			SEL=`ft_atoi "$SEL"`
-		done
-		printf "\n"
-		if [ "${FUNCS[$SEL]}" != "" ]
-		then
-			eval ${FUNCS[$SEL]}
-		fi
-	}
-
-	function get_key
-	{
-		local ord_value old_tty_settings
-		ord_value=$(printf '%d' "'$1")
-		if [[ $ord_value -eq 27 ]]; then
-			old_tty_settings=`stty -g`
-			stty -icanon min 0 time 0
-			read -s key
-			if [[ ${#key} -eq 0 ]]
-			then
-				printf "ESC"
-			else
-				printf "NULL"
-			fi
-			stty "$old_tty_settings"
-		else
-			printf "%s" "$1"
-		fi
-	}
-
 	function get_config
 	{
-		local MYFILE MYPATH RET0
+		local MYFILE LPATH RET0
 		MYFILE=`printf "$RETURNPATH/.my$1" | sed 's/ /\\ /g'`
-#		MYFILE="$RETURNPATH/.my"$1
 		if [ ! -f "$MYFILE" ]
 		then
 			touch "$MYFILE"
 		fi
-		MYPATH=`cat "$MYFILE"`
-		if [ ! -d "$MYPATH" ]
+		LPATH=`cat "$MYFILE"`
+		if [ ! -d "$LPATH" ]
 		then
 			printf "" > "$MYFILE"
-			MYPATH=""
+			LPATH=""
 		fi
-		printf "$MYPATH"
+		printf "$LPATH"
 	}
 
 	function save_config
@@ -398,115 +248,46 @@ then
 		eval $RET0
 	}
 
-	function exit_checker
-	{
-		printf "\n"
-		display_hr
-		printf "\n\n\n\n\033[0m"
-		tput cnorm
-		clear
-		cd "${GLOBAL_ENTRYPATH}"
-		exit
-	}
-
 	function check_norme
 	{	if [ "$OPT_NO_NORMINETTE" == "0" ]; then
 		local RET0 RET2 RET3 RET4 TOTAL TOTA2
 		rm -f "$RETURNPATH"/.mynorminette
-		cd "$MYPATH"
-		RET0=$(find . -type f | sed '/^\.\/\./d' | grep -E \\.\[hc\]$ | tr '\n' ' ')
-		RET2=`norminette "$RET0" 2>&1`
-		cd "$RETURNPATH"
-		echo "$RET2" > "$RETURNPATH"/.mynorminette
-		RET2=`cat .mynorminette | grep Error`
-		RET3=`cat .mynorminette | grep Warning`
-		RET4=`cat .mynorminette | grep "command not found"`
-		if [ "$RET2" == "" -a "$RET3" == "" -a "$RET4" == "" ]
+		RET0=$(find "${MYPATH}" -type f -name "*.[ch]" | awk 'BEGIN {ORS=" "} {gsub(/\ /, "\\ "); print}')
+		if [ "${RET0}" != "" ]
 		then
-			printf $C_GREEN"  All files passed the tests"$C_CLEAR
-		else
-			if [ "$RET4" != "" ]
+			RET2=`eval norminette $RET0 2>&1`
+			RET4=$?
+			echo "$RET2" > "$RETURNPATH"/.mynorminette
+			RET2=`cat .mynorminette | grep Error`
+			RET3=`cat .mynorminette | grep Warning`
+			if [ "$RET2" == "" -a "$RET3" == "" -a "$RET4" == 0 ]
 			then
-				printf $C_RED"  Command not found"$C_CLEAR
+				printf $C_GREEN"  All files passed the tests"$C_CLEAR
 			else
-				if [ "$RET2" == "" ]
+				if [ "$RET4" != 0 ]
 				then
-					TOTAL=0
+					printf $C_RED"  Command not found"$C_CLEAR
 				else
-					TOTAL=`echo "$RET2" | wc -l | sed 's/ //g'`
+					if [ "$RET2" == "" ]
+					then
+						TOTAL=0
+					else
+						TOTAL=`echo "$RET2" | awk 'END {print NR}'`
+					fi
+					if [ "$RET3" == "" ]
+					then
+						TOTA2=0
+					else
+						TOTA2=`echo "$RET3" | awk 'END {print NR}'`
+					fi
+					(( TOTAL = $TOTAL + $TOTA2 ))
+					printf $C_RED"  $TOTAL error(s) or warning(s)"$C_CLEAR
 				fi
-				if [ "$RET3" == "" ]
-				then
-					TOTA2=0
-				else
-					TOTA2=`echo "$RET3" | wc -l | sed 's/ //g'`
-				fi
-				(( TOTAL = $TOTAL + $TOTA2 ))
-				printf $C_RED"  $TOTAL error(s) or warning(s)"$C_CLEAR
 			fi
+		else
+			printf ${C_RED}"  No source file (.c) or header (.h) to check"${C_CLEAR}
 		fi
 		else printf $C_GREY"  --Not performed--"$C_CLEAR; fi
-	}
-
-	function check_author
-	{	if [ "$OPT_NO_AUTEUR" == "0" ]; then
-		local AUTHORF AUTHORC AUTHORE AUTHORG
-		AUTHORF="$MYPATH/auteur"
-		if [ ! -f "$AUTHORF" ]
-		then
-			printf $C_RED"  File not found"$C_CLEAR
-		else
-			AUTHORC=`cat -e "$AUTHORF" | awk '{if (NR == 1) print}'`
-			AUTHORE=`cat -e "$AUTHORF" | sed 's/\$$//' | awk '{if (NR == 1) print}'`
-			AUTHORG=`cat -e "$AUTHORF" | awk '{if (NR == 1) print}'`
-			if [ "$AUTHORE" == "$AUTHORG" ]
-			then
-				printf $C_RED"  No [Line Feed] character at the end of line"$C_CLEAR
-			else
-				printf $C_GREEN"  $AUTHORC"$C_CLEAR
-			fi
-		fi
-		else printf $C_GREY"  --Not performed--"$C_CLEAR; fi
-	}
-
-	function display_spinner
-	{
-		local pid=$1
-		local total_delay=0
-		local total_delay2=340
-		local delay=0.2
-		local spinstr='|/-\'
-		printf $C_BLUE""
-		while [ "$(ps a | awk '{print $1}' | grep $pid)" ];
-		do
-			if (( $total_delay2 < 1 ))
-			then
-				kill $pid
-				wait $! 2>/dev/null
-				(( total_delay2 = $total_delay / 5 ))
-				printf $C_RED"  Time out ($total_delay2 sec)"$C_CLEAR > $RETURNPATH/.myret
-			fi
-			if [ "$OPT_NO_TIMEOUT" == "0" ]
-			then
-				(( total_delay += 1 ))
-			fi
-			local temp=${spinstr#?}
-			printf "  [%c] " "$spinstr"
-			local spinstr=$temp${spinstr%"$temp"}
-			if (( $total_delay >= 5 ))
-			then
-				(( total_delay2 = ( 309 - $total_delay ) / 5 ))
-				printf "[time out: %02d]" "$total_delay2"
-			fi
-			sleep $delay
-			printf "\b\b\b\b\b\b"
-			if (( $total_delay >= 5 ))
-			then
-				printf "\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
-			fi
-		done
-		printf "                     \b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
-		printf $C_CLEAR""
 	}
 
 	function check_fileexists
@@ -563,7 +344,7 @@ then
 			PROCESSID=`ps | grep "$1" | grep -v "grep" | sed 's/^[ ]*//g' | cut -d" " -f1`
 			if [ "$PROCESSID" != "" ]
 			then
-				PROCESSCOUNT=`echo "$PROCESSID" | wc -l`
+				PROCESSCOUNT=`echo "$PROCESSID" | awk 'END {print NR}'`
 				while (( $PROCESSCOUNT > 0 ))
 				do
 					(( PROCESSCOUNT -= 1 ))
@@ -575,14 +356,22 @@ then
 		fi
 	}
 
-        function check_cleanlog
-        {
-                local RET0 LOGFILENAME
-                LOGFILENAME="$1"
-                if [ -f "$LOGFILENAME" ]
-                then
-                        RET0=`cat -e "$LOGFILENAME" | awk '{gsub(/\^M.*\^M/, "");  gsub(/\^@/, "");  gsub(/\^\[\[[0-9;]*m/, "");  gsub(/[\$]$/, ""); print}'`
-                        echo "$RET0" > "$LOGFILENAME"
-                fi
-        }
+	function utils_clear
+	{
+		printf "${C_CLEAR}"
+		tput cup 0 0
+		tput cd
+	}
+
+	function check_cleanlog
+	{
+		local RET0 LOGFILENAME
+		LOGFILENAME="$1"
+		if [ -f "$LOGFILENAME" ]
+		then
+			RET0=`cat -e "$LOGFILENAME" | awk '{gsub(/\^M.*\^M/, "");  gsub(/\^@/, "");  gsub(/\^\[\[[0-9;]*m/, "");  gsub(/[\$]$/, ""); print}'`
+			echo "$RET0" > "$LOGFILENAME"
+		fi
+	}
+
 fi

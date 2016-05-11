@@ -12,7 +12,7 @@ then
 		rm -f $LOGFILENAME
 		touch $LOGFILENAME
 		check_kill_by_name "$PROGNAME $PROGARGS"
-		(eval "$PROGNAME $PROGARGS" 1> $LOGFILENAME 2>&1 &)
+		(eval "$PROGNAME $PROGARGS" 1>$LOGFILENAME 2>&1 &)
 		PROCESSID=`ps | grep "$PROGNAME $PROGARGS" | grep -v "grep" | sed 's/^[ ]*//g' | cut -d" " -f1`
 		if [ "$PROCESSID" != "" ]
 		then
@@ -21,7 +21,7 @@ then
 			if [ "$PROCESSID" != "" ]
 			then
 				check_kill_by_name "$PROGNAME $PROGARGS"
-				RET0=`cat "$LOGFILENAME" | wc -l | sed 's/[ \t]*//g'`
+				RET0=`cat "$LOGFILENAME" | awk 'END {print NR}'`
 				printf $RET0
 			else
 				printf "%s" "-2"
@@ -73,11 +73,11 @@ then
 							printf $C_RED"  An error occured "$C_CLEAR
 							if [ "$RET1" == "-1" ]
 							then
-								printf "$PROGNAME2 has aborted" >> $LOGFILENAME
+								printf "$PROGNAME2 $PROGARGS has aborted" >> $LOGFILENAME
 							else
 								if [ "$RET1" == "-2" ]
 								then
-									printf "$PROGNAME2 has aborted or is terminated in less than 5 seconds" >> $LOGFILENAME
+									printf "$PROGNAME2 $PROGARGS has aborted or is terminated in less than 5 seconds" >> $LOGFILENAME
 								else
 									printf "$RET1" >> $LOGFILENAME
 								fi
@@ -85,13 +85,13 @@ then
 						fi
 					else
 						printf $C_RED"  An error occured"$C_CLEAR
-						printf "$PROGNAME2 has aborted or did nothing" >> $LOGFILENAME
+						printf "$PROGNAME2 $PROGARGS has aborted or did nothing" >> $LOGFILENAME
 					fi
 				else
 					printf $C_RED"  An error occured"$C_CLEAR
 					if [ "$RET0" == "-1" ]
 					then
-						printf "$PROGNAME1 has aborted" >> $LOGFILENAME
+						printf "$PROGNAME1 $PROGARGS has aborted" >> $LOGFILENAME
 					else
 						if [ "$RET0" == "-2" ]
 						then
@@ -103,7 +103,7 @@ then
 				fi
 			else
 				printf $C_RED"  An error occured"$C_CLEAR
-				printf "$PROGNAME1 has aborted or did nothing" >> $LOGFILENAME
+				printf "$PROGNAME1 $PROGARGS has aborted or did nothing" >> $LOGFILENAME
 			fi
 		else
 			printf $C_RED"  Fatal error: Binary Not Found"$C_CLEAR

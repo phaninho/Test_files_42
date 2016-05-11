@@ -5,7 +5,7 @@ then
 
 function check_libftunittest
 {	if [ "${OPT_NO_LIBFTUNITTEST}" == "0" ]; then
-	local RET0 RET1 TOTAL
+	local RET0 RET1 TOTAL MYPATH
 	local RUNNING_MODE=$1
 	local LOGFILENAME=".mylibftunittest"
 	${CMD_RM} -f ${LOGFILENAME}
@@ -14,9 +14,9 @@ function check_libftunittest
 		MYPATH=$(get_config "libft")
 		if [ "${OPT_NO_MAKEFILE}" == "0" -o "${RUNNING_MODE}" == "RUN_ALONE" ]
 		then
-			make re -C "${MYPATH}" 2>&1 1>/dev/null
+			make re -C "${MYPATH}" 1>/dev/null 2>&1
 		fi
-		make re f -C "${LIBFTUNITTEST_DIR}" LIBFTDIR="${MYPATH}" 2>&1 >${LOGFILENAME}
+		make re f -C "${LIBFTUNITTEST_DIR}" LIBFTDIR="${MYPATH}" >${LOGFILENAME} 2>&1
 		check_cleanlog ${LOGFILENAME}
 		RET0=`cat ${LOGFILENAME}`
 		RET1=`echo "${RET0}" | grep 'RUNING TESTS:'`
@@ -33,7 +33,7 @@ function check_libftunittest
 				echo "42FILECHECKER INFO:\n\nHere is the full standard output of the libft-unit-test running with your libft.\nSee also the clean logfile provided by the library at the following path:\n${RETURNPATH}/${LIBFTUNITTEST_DIR}/result.log\n\n\n\n------------------------------------------------\n\n\n\n${RET0}" >${LOGFILENAME}
 				if [ "${RET1}" != "" ]
 				then
-					TOTAL=`printf "%s\n" "${RET1}" | wc -l | sed 's/ //g'`
+					TOTAL=`printf "%s\n" "${RET1}" | awk 'END {print NR}'`
 					printf ${C_RED}"  ${TOTAL} failed test(s)"${C_CLEAR}
 				else
 					printf ${C_GREEN}"  All Unit Tests passed"${C_CLEAR}

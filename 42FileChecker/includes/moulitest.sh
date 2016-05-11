@@ -25,7 +25,7 @@ then
 			        RET0=`echo "$RET1" | grep FAIL`
 			        if [ "$RET0" != "" ]
 			        then
-			            TOTAL=`printf "%s\n" "$RET0" | wc -l | sed 's/ //g'`
+			            TOTAL=`printf "%s\n" "$RET0" | awk 'END {print NR}'`
 			            printf $C_RED"  $TOTAL failed test(s)"$C_CLEAR
 			        else
 			            printf $C_GREEN"  All Unit Tests passed"$C_CLEAR
@@ -40,18 +40,19 @@ then
 
     function configure_moulitest
     {
+	local LPATH=$(printf "%s" "$2" | sed 's/ /\\ /g')
         case "$1" in
             "libft")
-                echo "LIBFT_PATH = \"$2\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
+                echo "LIBFT_PATH = \"${LPATH}\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
                 ;;
             "gnl")
-                echo "GET_NEXT_LINE_PATH = \"$2\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
+                echo "GET_NEXT_LINE_PATH = \"${LPATH}\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
                 ;;
             "ft_ls")
-                echo "FT_LS_PATH = \"$2\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
+                echo "FT_LS_PATH = \"${LPATH}\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
                 ;;
             "ft_printf")
-                echo "FT_PRINTF_PATH = \"$2\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
+                echo "FT_PRINTF_PATH = \"${LPATH}\"" > "$RETURNPATH"/"${MOULITEST_DIR}"/config.ini
                 ;;
         esac
     }

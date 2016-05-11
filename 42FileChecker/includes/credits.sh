@@ -6,7 +6,6 @@ then
 	function display_credits
 	{
 		local SEL LEN
-		clear
 		display_header
 		printf "\n\n"
 		printf "  42FileChecker is a tiny bash script developped at 42 school for testing and checking the files according to the rules of the subjects.\n\n"
@@ -15,6 +14,8 @@ then
 		printf "     http://www.42.fr\n\n"
 		printf "  $C_WHITE-> moulitest (yyang42)\n"$C_CLEAR
 		printf "     ${MOULITEST_URL}\n\n"
+		printf "  $C_WHITE-> libft-unit-test (alelievr)\n"$C_CLEAR
+		printf "     ${LIBFTUNITTEST_URL}\n\n"
 		printf "  Other credits:\n\n"
 		printf "  $C_WHITE-> Text to ASCII Art Generator (patorjk@gmail.com)\n"$C_CLEAR
 		printf "     http://patorjk.com/software/taag/\n\n"

@@ -25,12 +25,13 @@ function check_install_dir
 
 GLOBAL_ENTRYPATH=$(pwd)
 GLOBAL_INSTALLDIR=$(check_install_dir)
+GLOBAL_LOCALBRANCH=$(git branch | awk '$0 ~ /^\*/ {print $2; exit}')
 cd "${GLOBAL_INSTALLDIR}"
 
 FILECHECKER_SH=1
 if [ ! -f .myrev ]; then git shortlog -s | awk 'BEGIN {rev=0} {rev+=$1} END {printf rev}' > .myrev 2>/dev/null; fi
-CVERSION=$(git log --oneline 2>/dev/null | wc -l | sed 's/ //g')
-if [ "$CVERSION" == "" ]; then CVERSION="???"; fi
+GLOBAL_CVERSION=$(git log --oneline 2>/dev/null | awk 'END {print NR}')
+if [ "${GLOBAL_CVERSION}" == "" ]; then GLOBAL_CVERSION="???"; fi
 RETURNPATH=$(pwd | sed 's/ /\ /g')
 OPT_NO_UPDATE=0
 OPT_NO_COLOR=0
@@ -39,6 +40,7 @@ OPT_NO_NORMINETTE=0
 OPT_NO_AUTEUR=0
 OPT_NO_MOULITEST=0
 OPT_NO_LIBFTUNITTEST=0
+OPT_NO_FILLITCHECKER=0
 OPT_NO_SPEEDTEST=0
 OPT_NO_LEAKS=0
 OPT_NO_BASICTESTS=0
@@ -61,6 +63,7 @@ do
 		"--no-auteur") OPT_NO_AUTEUR=1 ;;
 		"--no-moulitest") OPT_NO_MOULITEST=1 ;;
 		"--no-libftunittest") OPT_NO_LIBFTUNITTEST=1 ;;
+		"--no-fillitchecker") OPT_NO_FILLITCHECKER=1 ;;
 		"--no-speedtest") OPT_NO_SPEEDTEST=1 ;;
 		"--no-leaks") OPT_NO_LEAKS=1 ;;
 		"--no-basictests") OPT_NO_BASICTESTS=1 ;;
@@ -76,6 +79,8 @@ do
 done
 
 source includes/utils.sh
+source includes/auteur.sh
+source includes/fillit.sh
 source includes/libft.sh
 source includes/libftasm.sh
 source includes/get_next_line.sh
@@ -91,20 +96,35 @@ source includes/leaks.sh
 source includes/speedtest.sh
 source includes/configure.sh
 source includes/moulitest.sh
+source includes/fillit_checker.sh
 source includes/libftunittest.sh
+source includes/exit.sh
+source includes/display_spinner.sh
+source includes/display_menu.sh
+source includes/display_header.sh
+source includes/display_leftandright.sh
+source includes/signals.sh
 
 function main
 {
 	tput civis
 	display_header
 	printf "\n\n"
+	printf "${C_INVERTRED}"
+	display_center " "
+	display_center "Failing tests does not necessary mean you're wrong!"
+	display_center "42FileChecker does not substitute a corrector"
+	display_center "and was not made for that at first!"
+	display_center " "
+	printf "\n\n"
 	display_menu\
 		""\
-		check_libft "libft"\
+		check_fillit_main "fillit"\
+		check_libft_main "libft"\
 		check_libftasm "libftasm"\
-		check_gnl "get_next_line"\
-		check_ft_ls "ft_ls"\
-		check_ft_printf "ft_printf"\
+		check_gnl_main "get_next_line"\
+		check_ft_ls_main "ft_ls"\
+		check_ft_printf_main "ft_printf"\
 		check_fdf "fdf"\
 		"_"\
 		"check_option_set OPT_NO_TIMEOUT" "$(if [ "$OPT_NO_TIMEOUT" == 0 ]; then echo "disable timeout      (--no-timeout)"; else echo "enable timeout"; fi)"\
@@ -120,9 +140,11 @@ function main
 		exit_checker "EXIT"
 }
 
+tput civis
+tput smcup
 check_set_env
 check_set_colors
+catch_signals
 display_header_transition
 check_update
-
-cd "${GLOBAL_ENTRYPATH}"
+exit_checker
